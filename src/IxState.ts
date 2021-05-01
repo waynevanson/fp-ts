@@ -17,14 +17,25 @@
  * `IxState` derived by applying the `Identity` monad to the transformer `IxStateT`.
  * @since 2.10.0
  */
-import { ixStateT } from '.'
-import { Functor3 } from './Functor'
-import * as I from './Identity'
-import * as ixApply from './IxApply'
-import * as ixChain from './IxChain'
-import * as IxStateT from './IxStateT'
+
+import { Apply2, apFirst as apFirst_, apSecond as apSecond_, apS as apS_ } from './Apply'
+import { Chain2, bind as bind_ } from './Chain'
+import { Functor3, bindTo as bindTo_, flap as flap_ } from './Functor'
+import { IxApplicative3 } from './IxApplicative'
+import { IxApply3, iapFirst as iapFirst_, iapSecond as iapSecond_, iapS as iapS_ } from './IxApply'
+import { IxChain3, ichainFirst as ichainFirst_, ibind as ibind_ } from './IxChain'
+import { IxFunctor3, ibindTo as ibindTo_, iflap as iflap_ } from './IxFunctor'
+import { IxMonad3 } from './IxMonad'
+import { IxPointed3 } from './IxPointed'
+import { Monad2 } from './Monad'
 import { Pointed2 } from './Pointed'
 import { State } from './State'
+import * as I from './Identity'
+import * as IxStateT from './IxStateT'
+
+// -------------------------------------------------------------------------------------
+// model
+// -------------------------------------------------------------------------------------
 
 /**
  * @category Model
@@ -57,20 +68,239 @@ declare module './HKT' {
   }
 }
 
-/**
- * `map` can be used to turn functions `(a: A) => B` into functions `(fa: F<A>) => F<B>` whose argument and return types
- * use the type constructor `F` to represent some computational context.
- *
- * @category Functor
- * @since 2.10.0
- */
-export const map = IxStateT.map(I.Functor)
+// -------------------------------------------------------------------------------------
+// constructors
+// -------------------------------------------------------------------------------------
 
 /**
- * @category Pointed
+ * @summary
+ * Apply a function to the state, polymorphically changing the resulting state.
+ *
+ * @category constructors
  * @since 2.10.0
  */
-export const of: <S = unknown, A = never>(a: A) => IxState<S, S, A> = IxStateT.of(I.Pointed)
+export const imodify: <I, O>(f: (i: I) => O) => IxState<I, O, void> =
+  /*#__PURE__*/
+  IxStateT.imodify(I.Pointed)
+
+/**
+ * @category constructors
+ * @since 2.10.0
+ */
+export const put: <I>(fi: I) => IxState<I, I, void> =
+  /*#__PURE__*/
+  IxStateT.put(I.Pointed)
+
+/**
+ * @category constructors
+ * @since 2.10.0
+ */
+export const fromState: <I, A>(fa: State<I, A>) => IxState<I, I, A> = IxStateT.fromStateF<I.URI>()
+
+/**
+ * @category constructors
+ * @since 2.10.0
+ */
+export const get =
+  /*#__PURE__*/
+  IxStateT.get(I.Pointed)
+
+/**
+ * @category constructors
+ * @since 2.10.0
+ */
+export const gets =
+  /*#__PURE__*/
+  IxStateT.gets(I.Pointed)
+
+// -------------------------------------------------------------------------------------
+// destructors
+// -------------------------------------------------------------------------------------
+
+/**
+ * @category destructors
+ * @since 2.10.0
+ */
+export const toState: <I, A>(fa: IxState<I, I, A>) => State<I, A> = IxStateT.toStateF<I.URI>()
+
+/**
+ * @category destructors
+ * @since 2.10.0
+ */
+export const execute =
+  /*#__PURE__*/
+  IxStateT.iexecute(I.Functor)
+
+/**
+ * @category destructors
+ * @since 2.10.0
+ */
+export const evaluate =
+  /*#__PURE__*/
+  IxStateT.evaluate(I.Functor)
+
+// -------------------------------------------------------------------------------------
+// non-pipeables
+// -------------------------------------------------------------------------------------
+
+const _iof: IxPointed3<URI>['iof'] = (a) => (i) => [a, i]
+const _imap: IxFunctor3<URI>['imap'] = (fa, f) => (i) => {
+  const [a, o] = fa(i)
+  return [f(a), o]
+}
+const _iap: IxApply3<URI>['iap'] = (fab, fa) => (i) => {
+  const [f, o] = fab(i)
+  const [a, z] = fa(o)
+  return [f(a), z]
+}
+const _ichain: IxChain3<URI>['ichain'] = (fa, f) => (i) => {
+  const [a, o] = fa(i)
+  const [b, z] = f(a)(o)
+  return [b, z]
+}
+const _of: Pointed2<URI>['of'] = _iof
+const _map: Functor3<URI>['map'] = _imap
+const _ap: Apply2<URI>['ap'] = _iap
+const _chain: Chain2<URI>['chain'] = _ichain
+
+// -------------------------------------------------------------------------------------
+// instances
+// -------------------------------------------------------------------------------------
+
+/**
+ * @category instances
+ * @since 2.10.0
+ */
+export const IxFunctor: IxFunctor3<URI> = {
+  URI,
+  imap: _imap
+}
+
+/**
+ * @category instances
+ * @since 2.10.0
+ */
+export const IxApply: IxApply3<URI> = {
+  URI,
+  imap: _imap,
+  iap: _iap
+}
+
+/**
+ * @category instances
+ * @since 2.10.0
+ */
+export const IxChain: IxChain3<URI> = {
+  URI,
+  imap: _imap,
+  iap: _iap,
+  ichain: _ichain
+}
+
+/**
+ * @category instances
+ * @since 2.10.0
+ */
+export const IxPointed: IxPointed3<URI> = {
+  URI,
+  iof: _iof
+}
+
+/**
+ * @category instances
+ * @since 2.10.0
+ */
+export const IxApplicative: IxApplicative3<URI> = {
+  URI,
+  iof: _iof,
+  imap: _imap,
+  iap: _iap
+}
+
+/**
+ * @category instances
+ * @since 2.10.0
+ */
+export const IxMonad: IxMonad3<URI> = {
+  URI,
+  iof: _iof,
+  imap: _imap,
+  iap: _iap,
+  ichain: _ichain
+}
+
+/**
+ * @category instances
+ * @since 2.10.0
+ */
+export const Pointed: Pointed2<URI> = { URI, of: _of }
+
+/**
+ * @category instances
+ * @since 2.10.0
+ */
+export const Functor: Functor3<URI> = {
+  URI,
+  map: _imap
+}
+
+/**
+ * @category instances
+ * @since 2.10.0
+ */
+export const Apply: Apply2<URI> = {
+  URI,
+  map: _map,
+  ap: _ap
+}
+
+/**
+ * @category instances
+ * @since 2.10.0
+ */
+export const Chain: Chain2<URI> = {
+  URI,
+  map: _map,
+  ap: _ap,
+  chain: _chain
+}
+/**
+ * @category instances
+ * @since 2.10.0
+ */
+export const Monad: Monad2<URI> = {
+  URI,
+  of: _of,
+  map: _map,
+  ap: _ap,
+  chain: _chain
+}
+
+// -------------------------------------------------------------------------------------
+// type class members
+// -------------------------------------------------------------------------------------
+
+/**
+ * @category IxPointed
+ * @since 2.10.0
+ */
+export const iof: IxPointed3<URI>['iof'] = _iof
+
+/**
+ * @category IxFunctor
+ * @since 2.10.0
+ */
+export const imap =
+  /*#__PURE__*/
+  IxStateT.imap(I.Functor)
+
+/**
+ * @category IxFunctor
+ * @since 2.10.0
+ */
+export const iflap =
+  /*#__PURE__*/
+  iflap_(IxFunctor)
 
 /**
  * Apply a function to an argument under a type constructor.
@@ -78,7 +308,43 @@ export const of: <S = unknown, A = never>(a: A) => IxState<S, S, A> = IxStateT.o
  * @category IxApply
  * @since 2.10.0
  */
-export const iap = IxStateT.iap(I.Chain)
+export const iap =
+  /*#__PURE__*/
+  IxStateT.iap(I.Chain)
+
+/**
+ * @category IxApply
+ *
+ * @since 2.10.0
+ */
+export const iapFirst =
+  /*#__PURE__*/
+  iapFirst_(IxApply)
+
+/**
+ * @category IxApply
+ * @since 2.10.0
+ */
+export const iapSecond =
+  /*#__PURE__*/
+  iapSecond_(IxApply)
+
+/**
+ * @category Apply
+ *
+ * @since 2.10.0
+ */
+export const apFirst =
+  /*#__PURE__*/
+  apFirst_(Apply)
+
+/**
+ * @category Apply
+ * @since 2.10.0
+ */
+export const apSecond =
+  /*#__PURE__*/
+  apSecond_(Apply)
 
 /**
  * Composes computations in sequence, using the return value of one computation to determine the next computation.
@@ -87,129 +353,130 @@ export const iap = IxStateT.iap(I.Chain)
  *
  * @since 2.10.0
  */
-export const ichain = IxStateT.ichain(I.Chain)
+export const ichain =
+  /*#__PURE__*/
+  IxStateT.ichain(I.Chain)
 
 /**
- * @category Instances
+ * @category IxChain
  * @since 2.10.0
  */
-export const Pointed: Pointed2<URI> = { URI, of }
+export const ichainFirst =
+  /*#__PURE__*/
+  ichainFirst_(IxChain)
 
 /**
- * @category Instances
+ * @category Pointed
  * @since 2.10.0
  */
-export const Functor: Functor3<URI> = {
-  URI,
-  map: (fa, f) => map(f)(fa)
-}
+export const of: Pointed2<URI>['of'] =
+  /*#__PURE__*/
+  IxStateT.of(I.Pointed)
 
 /**
- * @category Instances
- * @since 2.10.0
- */
-export const IxApply: ixApply.IxApply3<URI> = {
-  ...Functor,
-  iap
-}
-
-/**
- * @category Instances
- * @since 2.10.0
- */
-export const IxChain: ixChain.IxChain3<URI> = {
-  ...IxApply,
-  ichain
-}
-
-/**
- * @category Combinators
+ * `map` can be used to turn functions `(a: A) => B` into functions `(fa: F<A>) => F<B>` whose argument and return types
+ * use the type constructor `F` to represent some computational context.
  *
+ * @category Functor
  * @since 2.10.0
  */
-export const iapFirst = ixApply.iapFirst(IxApply)
+export const map =
+  /*#__PURE__*/
+  IxStateT.map(I.Functor)
 
 /**
- * @category Combinators
- * @since 2.10.0
- */
-export const iapSecond = ixApply.iapSecond(IxApply)
-
-/**
- * @category Combinators
- * @since 2.10.0
- */
-export const ichainFirst = ixChain.ichainFirst(IxChain)
-
-/**
- * @summary
- * Apply a function to the state, polymorphically changing the resulting state.
+ * `map` can be used to turn functions `(a: A) => B` into functions `(fa: F<A>) => F<B>` whose argument and return types
+ * use the type constructor `F` to represent some computational context.
  *
- * @category Constructors
+ * @category Functor
  * @since 2.10.0
  */
-export const imodify: <I, O>(f: (i: I) => O) => IxState<I, O, void> = IxStateT.imodify(I.Pointed)
+export const flap =
+  /*#__PURE__*/
+  flap_(Functor)
 
 /**
- * @category Constructor
+ *
+ * @category Apply
  * @since 2.10.0
  */
-export const put: <I>(fi: I) => IxState<I, I, void> = IxStateT.put(I.Pointed)
+export const ap =
+  /*#__PURE__*/
+  IxStateT.ap(I.Chain)
 
 /**
- * @category Destructors
+ *
+ * @category Chain
  * @since 2.10.0
  */
-export const toState: <I, A>(fa: IxState<I, I, A>) => State<I, A> = IxStateT.toStateF<I.URI>()
+export const chain =
+  /*#__PURE__*/
+  IxStateT.chain(I.Chain)
 
-/**
- * @category Constructors
- * @since 2.10.0
- */
-
-export const fromState: <I, A>(fa: State<I, A>) => IxState<I, I, A> = IxStateT.fromStateF<I.URI>()
+// -------------------------------------------------------------------------------------
+// combinators
+// -------------------------------------------------------------------------------------
 
 /**
  * Changes the value of the local context during the execution of the action `ma` (similar to `Contravariant`'s
  * `contramap`).
  *
- * @category Combinators
+ * @category combinators
  * @since 2.10.0
  */
-export const local = ixStateT.local<I.URI>()
+export const local = IxStateT.local<I.URI>()
+
+// -------------------------------------------------------------------------------------
+// do notation
+// -------------------------------------------------------------------------------------
 
 /**
- * @category Constructor
  * @since 2.10.0
  */
-export const iDo = ixChain.iDo(Pointed)
+export const Do = <I>() => _iof<I, {}>({})
 
 /**
- * @category Combinator
  * @since 2.10.0
  */
-export const bind = ixChain.ibind(IxChain)
+export const ibind =
+  /*#__PURE__*/
+  ibind_(IxChain)
 
 /**
- * @category Destructors
  * @since 2.10.0
  */
-export const execute = ixStateT.iexecute(I.Functor)
+export const ibindTo =
+  /*#__PURE__*/
+  ibindTo_(IxChain)
 
 /**
- * @category Destructors
  * @since 2.10.0
  */
-export const evaluate = ixStateT.evaluate(I.Functor)
+export const bind =
+  /*#__PURE__*/
+  bind_(Chain)
 
 /**
- * @category Constructors
  * @since 2.10.0
  */
-export const get = IxStateT.get(I.Pointed)
+export const bindTo =
+  /*#__PURE__*/
+  bindTo_(Chain)
+
+// -------------------------------------------------------------------------------------
+// pipeable sequence S
+// -------------------------------------------------------------------------------------
 
 /**
- * @category Constructors
  * @since 2.10.0
  */
-export const gets = IxStateT.gets(I.Pointed)
+export const iapS =
+  /*#__PURE__*/
+  iapS_(IxApply)
+
+/**
+ * @since 2.10.0
+ */
+export const apS =
+  /*#__PURE__*/
+  apS_(Apply)

@@ -132,7 +132,7 @@ Less strict version of [`alt`](#alt).
 ```ts
 export declare const altW: <R2, E2, B>(
   that: () => ReaderEither<R2, E2, B>
-) => <R1, E1, A>(fa: ReaderEither<R1, E1, A>) => ReaderEither<R1 & R2, E2 | E1, B | A>
+) => <R1, E1, A>(fa: ReaderEither<R1, E1, A>) => ReaderEither<R1 & R2, E2, B | A>
 ```
 
 Added in v2.9.0
@@ -313,7 +313,7 @@ Added in v2.4.0
 
 ## chainEitherKW
 
-Less strict version of [`chainEitherK`](#chainEitherK).
+Less strict version of [`chainEitherK`](#chaineitherk).
 
 **Signature**
 
@@ -344,7 +344,7 @@ Added in v2.0.0
 
 ## chainFirstW
 
-Less strict version of [`chainFirst`](#chainFirst)
+Less strict version of [`chainFirst`](#chainfirst)
 
 Derivable from `Chain`.
 
@@ -387,7 +387,7 @@ Added in v2.0.0
 
 ## filterOrElseW
 
-Less strict version of [`filterOrElse`](#filterOrElse).
+Less strict version of [`filterOrElse`](#filterorelse).
 
 **Signature**
 
@@ -466,7 +466,7 @@ Added in v2.0.0
 
 ## orElseW
 
-Less strict version of [`orElse`](#orElse).
+Less strict version of [`orElse`](#orelse).
 
 **Signature**
 
@@ -490,7 +490,7 @@ Added in v2.0.0
 
 ## ~~local~~
 
-Use `Reader`'s `local` instead.
+Use [`local`](./Reader.ts.html#local) instead.
 
 **Signature**
 
@@ -599,7 +599,7 @@ Added in v2.0.0
 
 ## fold
 
-Alias of [`matchE`](#matchE).
+Alias of [`matchE`](#matche).
 
 **Signature**
 
@@ -614,7 +614,7 @@ Added in v2.0.0
 
 ## foldW
 
-Alias of [`matchEW`](#matchEW).
+Alias of [`matchEW`](#matchew).
 
 **Signature**
 
@@ -641,7 +641,7 @@ Added in v2.0.0
 
 ## getOrElseW
 
-Less strict version of [`getOrElse`](#getOrElse).
+Less strict version of [`getOrElse`](#getorelse).
 
 **Signature**
 
@@ -681,7 +681,7 @@ Added in v2.10.0
 
 ## matchEW
 
-Less strict version of [`matchE`](#matchE).
+Less strict version of [`matchE`](#matche).
 
 **Signature**
 
@@ -873,7 +873,7 @@ Added in v2.10.0
 
 ## ~~getApplyMonoid~~
 
-Use `Applicative.getApplicativeMonoid` instead.
+Use [`getApplicativeMonoid`](./Applicative.ts.html#getApplicativeMonoid) instead.
 
 **Signature**
 
@@ -885,10 +885,7 @@ Added in v2.0.0
 
 ## ~~getApplySemigroup~~
 
-Use `Apply.getApplySemigroup` instead.
-
-Semigroup returning the left-most `Left` value. If both operands are `Right`s then the inner values
-are concatenated using the provided `Semigroup`
+Use [`getApplySemigroup`](./Apply.ts.html#getApplySemigroup) instead.
 
 **Signature**
 
@@ -900,7 +897,7 @@ Added in v2.0.0
 
 ## ~~getReaderValidation~~
 
-Use `getApplicativeReaderValidation` and `getAltReaderValidation` instead.
+Use [`getApplicativeReaderValidation`](#getapplicativereadervalidation) and [`getAltReaderValidation`](#getaltreadervalidation) instead.
 
 **Signature**
 
@@ -914,10 +911,7 @@ Added in v2.3.0
 
 ## ~~getSemigroup~~
 
-Use `Apply.getApplySemigroup` instead.
-
-Semigroup returning the left-most non-`Left` value. If both operands are `Right`s then the inner values are
-concatenated using the provided `Semigroup`
+Use [`getApplySemigroup`](./Apply.ts.html#getApplySemigroup) instead.
 
 **Signature**
 

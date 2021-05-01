@@ -49,6 +49,14 @@ import * as invariant from './Invariant'
 import * as io from './IO'
 import * as ioEither from './IOEither'
 import * as ioRef from './IORef'
+import * as ixApplicative from './IxApplicative'
+import * as ixApply from './IxApply'
+import * as ixChain from './IxChain'
+import * as ixFunctor from './IxFunctor'
+import * as ixMonad from './IxMonad'
+import * as ixPointed from './IxPointed'
+import * as ixState from './IxState'
+import * as ixStateT from './IxStateT'
 import * as joinSemilattice from './JoinSemilattice'
 import * as json from './Json'
 import * as lattice from './Lattice'
@@ -112,10 +120,6 @@ import * as validationT from './ValidationT'
 import * as witherable from './Witherable'
 import * as writer from './Writer'
 import * as writerT from './WriterT'
-import * as ixApply from './IxApply'
-import * as ixChain from './IxChain'
-import * as ixStateT from './IxStateT'
-import * as ixState from './IxState'
 export {
   /**
    * @since 2.0.0
@@ -304,11 +308,27 @@ export {
   /**
    * @since 2.10.0
    */
+  ixApplicative,
+  /**
+   * @since 2.10.0
+   */
   ixApply,
   /**
    * @since 2.10.0
    */
   ixChain,
+  /**
+   * @since 2.10.0
+   */
+  ixFunctor,
+  /**
+   * @since 2.10.0
+   */
+  ixMonad,
+  /**
+   * @since 2.10.0
+   */
+  ixPointed,
   /**
    * @since 2.10.0
    */

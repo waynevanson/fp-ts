@@ -167,7 +167,7 @@ Less strict version of [`alt`](#alt).
 ```ts
 export declare const altW: <R2, E2, B>(
   that: () => ReaderTaskEither<R2, E2, B>
-) => <R1, E1, A>(fa: ReaderTaskEither<R1, E1, A>) => ReaderTaskEither<R1 & R2, E2 | E1, B | A>
+) => <R1, E1, A>(fa: ReaderTaskEither<R1, E1, A>) => ReaderTaskEither<R1 & R2, E2, B | A>
 ```
 
 Added in v2.9.0
@@ -350,7 +350,7 @@ Added in v2.4.0
 
 ## chainEitherKW
 
-Less strict version of [`chainEitherK`](#chainEitherK).
+Less strict version of [`chainEitherK`](#chaineitherk).
 
 **Signature**
 
@@ -405,7 +405,7 @@ Added in v2.10.0
 
 ## chainFirstW
 
-Less strict version of [`chainFirst`](#chainFirst).
+Less strict version of [`chainFirst`](#chainfirst).
 
 Derivable from `Chain`.
 
@@ -433,7 +433,7 @@ Added in v2.4.0
 
 ## chainIOEitherKW
 
-Less strict version of [`chainIOEitherK`](#chainIOEitherK).
+Less strict version of [`chainIOEitherK`](#chainioeitherk).
 
 **Signature**
 
@@ -483,7 +483,7 @@ Added in v2.4.0
 
 ## chainTaskEitherKW
 
-Less strict version of [`chainTaskEitherK`](#chainTaskEitherK).
+Less strict version of [`chainTaskEitherK`](#chaintaskeitherk).
 
 **Signature**
 
@@ -524,7 +524,7 @@ Added in v2.0.0
 
 ## filterOrElseW
 
-Less strict version of [`filterOrElse`](#filterOrElse).
+Less strict version of [`filterOrElse`](#filterorelse).
 
 **Signature**
 
@@ -649,7 +649,7 @@ Added in v2.0.0
 
 ## orElseW
 
-Less strict version of [`orElse`](#orElse).
+Less strict version of [`orElse`](#orelse).
 
 **Signature**
 
@@ -673,7 +673,7 @@ Added in v2.0.0
 
 ## ~~local~~
 
-Use `Reader`'s `local` instead.
+Use [`local`](./Reader.ts.html#local) instead.
 
 **Signature**
 
@@ -894,7 +894,7 @@ Added in v2.0.0
 
 ## fold
 
-Alias of [`matchE`](#matchE).
+Alias of [`matchE`](#matche).
 
 **Signature**
 
@@ -909,7 +909,7 @@ Added in v2.0.0
 
 ## foldW
 
-Alias of [`matchEW`](#matchEW).
+Alias of [`matchEW`](#matchew).
 
 **Signature**
 
@@ -936,7 +936,7 @@ Added in v2.0.0
 
 ## getOrElseW
 
-Less strict version of [`getOrElse`](#getOrElse).
+Less strict version of [`getOrElse`](#getorelse).
 
 **Signature**
 
@@ -976,7 +976,7 @@ Added in v2.10.0
 
 ## matchEW
 
-Less strict version of [`matchE`](#matchE).
+Less strict version of [`matchE`](#matche).
 
 **Signature**
 
@@ -1228,7 +1228,7 @@ Added in v2.10.0
 
 ## ~~getApplyMonoid~~
 
-Use `Applicative.getApplicativeMonoid` instead.
+Use [`getApplicativeMonoid`](./Applicative.ts.html#getApplicativeMonoid) instead.
 
 **Signature**
 
@@ -1240,7 +1240,7 @@ Added in v2.0.0
 
 ## ~~getApplySemigroup~~
 
-Use `Apply.getApplySemigroup` instead.
+Use [`getApplySemigroup`](./Apply.ts.html#getApplySemigroup) instead.
 
 Semigroup returning the left-most `Left` value. If both operands are `Right`s then the inner values
 are concatenated using the provided `Semigroup`
@@ -1255,7 +1255,7 @@ Added in v2.0.0
 
 ## ~~getReaderTaskValidation~~
 
-Use `getApplicativeReaderTaskValidation` and `getAltReaderTaskValidation` instead.
+Use [`getApplicativeReaderTaskValidation`](#getapplicativereadertaskvalidation) and [`getAltReaderTaskValidation`](#getaltreadertaskvalidation) instead.
 
 **Signature**
 
@@ -1269,10 +1269,7 @@ Added in v2.3.0
 
 ## ~~getSemigroup~~
 
-Use `Apply.getApplySemigroup` instead.
-
-Semigroup returning the left-most non-`Left` value. If both operands are `Right`s then the inner values are
-concatenated using the provided `Semigroup`
+Use [`getApplySemigroup`](./Apply.ts.html#getApplySemigroup) instead.
 
 **Signature**
 

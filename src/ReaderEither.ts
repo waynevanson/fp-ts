@@ -148,7 +148,7 @@ export const matchE: <R, E, A, B>(
   ET.matchE(R.Monad)
 
 /**
- * Alias of [`matchE`](#matchE).
+ * Alias of [`matchE`](#matche).
  *
  * @category destructors
  * @since 2.0.0
@@ -156,7 +156,7 @@ export const matchE: <R, E, A, B>(
 export const fold = matchE
 
 /**
- * Less strict version of [`matchE`](#matchE).
+ * Less strict version of [`matchE`](#matche).
  *
  * @category destructors
  * @since 2.10.0
@@ -167,7 +167,7 @@ export const matchEW: <E, R2, B, A, R3, C>(
 ) => <R1>(ma: ReaderEither<R1, E, A>) => Reader<R1 & R2 & R3, B | C> = matchE as any
 
 /**
- * Alias of [`matchEW`](#matchEW).
+ * Alias of [`matchEW`](#matchew).
  *
  * @category destructors
  * @since 2.10.0
@@ -183,7 +183,7 @@ export const getOrElse: <E, R, A>(onLeft: (e: E) => Reader<R, A>) => (ma: Reader
   ET.getOrElse(R.Monad)
 
 /**
- * Less strict version of [`getOrElse`](#getOrElse).
+ * Less strict version of [`getOrElse`](#getorelse).
  *
  * @category destructors
  * @since 2.6.0
@@ -219,7 +219,7 @@ export const orElse: <E1, R, E2, A>(
   ET.orElse(R.Monad)
 
 /**
- * Less strict version of [`orElse`](#orElse).
+ * Less strict version of [`orElse`](#orelse).
  *
  * @category combinators
  * @since 2.10.0
@@ -370,7 +370,7 @@ export const alt: <R, E, A>(that: () => ReaderEither<R, E, A>) => (fa: ReaderEit
  */
 export const altW: <R2, E2, B>(
   that: () => ReaderEither<R2, E2, B>
-) => <R1, E1, A>(fa: ReaderEither<R1, E1, A>) => ReaderEither<R1 & R2, E1 | E2, A | B> = alt as any
+) => <R1, E1, A>(fa: ReaderEither<R1, E1, A>) => ReaderEither<R1 & R2, E2, A | B> = alt as any
 
 /**
  * @category MonadThrow
@@ -580,7 +580,7 @@ export const chainFirst: <R, E, A, B>(
   chainFirst_(Chain)
 
 /**
- * Less strict version of [`chainFirst`](#chainFirst)
+ * Less strict version of [`chainFirst`](#chainfirst)
  *
  * Derivable from `Chain`.
  *
@@ -668,7 +668,7 @@ export const chainEitherK: <E, A, B>(
   chainEitherK_(FromEither, Chain)
 
 /**
- * Less strict version of [`chainEitherK`](#chainEitherK).
+ * Less strict version of [`chainEitherK`](#chaineitherk).
  *
  * @category combinators
  * @since 2.6.1
@@ -702,7 +702,7 @@ export const filterOrElse: {
   filterOrElse_(FromEither, Chain)
 
 /**
- * Less strict version of [`filterOrElse`](#filterOrElse).
+ * Less strict version of [`filterOrElse`](#filterorelse).
  *
  * @category combinators
  * @since 2.9.0
@@ -840,10 +840,7 @@ export const readerEither: Monad3<URI> & Bifunctor3<URI> & Alt3<URI> & MonadThro
 }
 
 /**
- * Use `Apply.getApplySemigroup` instead.
- *
- * Semigroup returning the left-most `Left` value. If both operands are `Right`s then the inner values
- * are concatenated using the provided `Semigroup`
+ * Use [`getApplySemigroup`](./Apply.ts.html#getApplySemigroup) instead.
  *
  * @category instances
  * @since 2.0.0
@@ -854,7 +851,7 @@ export const getApplySemigroup: <R, E, A>(S: Semigroup<A>) => Semigroup<ReaderEi
   getApplySemigroup_(Apply)
 
 /**
- * Use `Applicative.getApplicativeMonoid` instead.
+ * Use [`getApplicativeMonoid`](./Applicative.ts.html#getApplicativeMonoid) instead.
  *
  * @category instances
  * @since 2.0.0
@@ -865,10 +862,7 @@ export const getApplyMonoid: <R, E, A>(M: Monoid<A>) => Monoid<ReaderEither<R, E
   getApplicativeMonoid(Applicative)
 
 /**
- * Use `Apply.getApplySemigroup` instead.
- *
- * Semigroup returning the left-most non-`Left` value. If both operands are `Right`s then the inner values are
- * concatenated using the provided `Semigroup`
+ * Use [`getApplySemigroup`](./Apply.ts.html#getApplySemigroup) instead.
  *
  * @category instances
  * @since 2.0.0
@@ -878,7 +872,7 @@ export const getSemigroup = <R, E, A>(S: Semigroup<A>): Semigroup<ReaderEither<R
   getApplySemigroup_(R.Apply)(E.getSemigroup(S))
 
 /**
- * Use `getApplicativeReaderValidation` and `getAltReaderValidation` instead.
+ * Use [`getApplicativeReaderValidation`](#getapplicativereadervalidation) and [`getAltReaderValidation`](#getaltreadervalidation) instead.
  *
  * @category instances
  * @since 2.3.0
@@ -904,7 +898,7 @@ export function getReaderValidation<E>(
 }
 
 /**
- * Use `Reader`'s `local` instead.
+ * Use [`local`](./Reader.ts.html#local) instead.
  *
  * @category combinators
  * @since 2.0.0

@@ -4,22 +4,8 @@ import { deepStrictEqual, double } from './util'
 import * as State from '../src/State'
 
 describe('IxState', () => {
-  it('map', () => {
-    deepStrictEqual(pipe(M.of(4), M.map(double))(9), [8, 9])
-  })
-
   it('put', () => {
     deepStrictEqual(M.put(9)(8), [constVoid(), 9])
-  })
-
-  it('ichainFirst', () => {
-    deepStrictEqual(
-      pipe(
-        M.of<number, string>('answer'),
-        M.ichainFirst(() => M.imodify(String))
-      )(42),
-      ['answer', '42']
-    )
   })
 
   it('toState', () => {
@@ -34,17 +20,36 @@ describe('IxState', () => {
 
   describe('do notation', () => {
     it('Do', () => {
-      deepStrictEqual(M.iDo()(4), [{}, 4])
+      deepStrictEqual(M.Do()(4), [{}, 4])
+    })
+
+    it('ibind', () => {
+      deepStrictEqual(
+        pipe(
+          M.Do(),
+          M.ibind('answer', () => M.of(42))
+        )(constVoid()),
+        [{ answer: 42 }, constVoid()]
+      )
+    })
+
+    test('ibindTo', () => {
+      deepStrictEqual(pipe(M.of(42), M.ibindTo('answer'))(constVoid()), [{ answer: 42 }, constVoid()])
     })
 
     it('bind', () => {
       deepStrictEqual(
         pipe(
-          M.iDo(),
-          M.bind('answer', () => M.of(42))
-        )(constVoid()),
-        [{ answer: 42 }, constVoid()]
+          M.Do<number>(),
+          M.bind('a', () => M.of(42)),
+          M.bind('b', ({ a }) => M.of(a + 5))
+        )(0),
+        [{ a: 42, b: 47 }, 0]
       )
+    })
+
+    test('bindTo', () => {
+      deepStrictEqual(pipe(M.of<number, number>(42), M.bindTo('answer'))(0), [{ answer: 42 }, 0])
     })
   })
 
@@ -68,6 +73,33 @@ describe('IxState', () => {
     deepStrictEqual(M.imodify(String)(42), [constVoid(), '42'])
   })
 
+  it('map', () => {
+    deepStrictEqual(pipe(M.of(4), M.map(double))(9), [8, 9])
+  })
+  it('imap', () => {
+    deepStrictEqual(pipe(M.of(4), M.imap(double))(9), [8, 9])
+  })
+
+  it('flap', () => {
+    deepStrictEqual(
+      pipe(
+        M.of((x: number) => `${x}`),
+        M.flap(1)
+      )(100),
+      [`${1}`, 100]
+    )
+  })
+
+  it('iflap', () => {
+    deepStrictEqual(
+      pipe(
+        M.of((x: number) => `${x}`),
+        M.iflap(1)
+      )(100),
+      [`${1}`, 100]
+    )
+  })
+
   test('ichain', () => {
     deepStrictEqual(
       pipe(
@@ -79,8 +111,32 @@ describe('IxState', () => {
     )
   })
 
+  test('chain', () => {
+    deepStrictEqual(
+      pipe(
+        M.of<number, number>(1),
+        M.chain((x) => M.imodify((y) => x + y)),
+        M.chain(() => M.imodify((y) => y - 2))
+      )(42),
+      [constVoid(), 41]
+    )
+  })
+
+  it('ichainFirst', () => {
+    deepStrictEqual(
+      pipe(
+        M.of<number, string>('answer'),
+        M.ichainFirst(() => M.imodify(String))
+      )(42),
+      ['answer', '42']
+    )
+  })
+
   test('of', () => {
     deepStrictEqual(M.of<number, string>('The Answer')(42), ['The Answer', 42])
+  })
+  test('iof', () => {
+    deepStrictEqual(M.iof<number, string>('The Answer')(42), ['The Answer', 42])
   })
 
   test('iap', () => {
@@ -95,6 +151,21 @@ describe('IxState', () => {
         )
       )('Hello, World!'),
       [84, ['Hello', 'World!']]
+    )
+  })
+
+  test('ap', () => {
+    deepStrictEqual(
+      pipe(
+        M.of<string, (a: string) => string>((x) => x.concat(x)),
+        M.ap(
+          pipe(
+            M.of<string, string>('42'),
+            M.ichainFirst(() => M.imodify((a) => a.replace(', ', '')))
+          )
+        )
+      )('Hello, World!'),
+      ['4242', 'HelloWorld!']
     )
   })
 
@@ -126,6 +197,40 @@ describe('IxState', () => {
       )(42),
       [2, '42']
     )
+  })
+
+  test('apFirst', () => {
+    deepStrictEqual(
+      pipe(
+        M.of<string, string>('Hello, World!'),
+        M.apFirst(
+          pipe(
+            M.of<string, string>('42'),
+            M.ichainFirst(() => M.imodify((a) => a.replace(', ', '')))
+          )
+        )
+      )('Hello, World!'),
+      ['Hello, World!', 'HelloWorld!']
+    )
+  })
+
+  test('apSecond', () => {
+    deepStrictEqual(
+      pipe(
+        M.of<string, string>('Hello, World!'),
+        M.apSecond(
+          pipe(
+            M.of<string, string>('42'),
+            M.ichainFirst(() => M.imodify((a) => a.replace(', ', '')))
+          )
+        )
+      )('Hello, World!'),
+      ['42', 'HelloWorld!']
+    )
+  })
+
+  test('iapS', () => {
+    deepStrictEqual(pipe(M.Do(), M.iapS('answer', M.of(42)))(constVoid()), [{ answer: 42 }, constVoid()])
   })
 
   test('local', () => {
